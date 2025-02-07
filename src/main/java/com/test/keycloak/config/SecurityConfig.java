@@ -2,6 +2,7 @@ package com.test.keycloak.config;
 
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.Customizer;
@@ -16,10 +17,15 @@ import javax.crypto.SecretKey;
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
-@RequiredArgsConstructor
+
 public class SecurityConfig {
 
+    @Autowired
     private final JwtAuthConverter jwtAuthConverter;
+
+    public SecurityConfig(JwtAuthConverter jwtAuthConverter) {
+        this.jwtAuthConverter = jwtAuthConverter;
+    }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {

@@ -19,13 +19,15 @@ import java.util.stream.Stream;
 public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationToken> {
 
     private final JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter = new JwtGrantedAuthoritiesConverter();
+    private final String principleAttribute;
+    private final String resourceId;
 
-    @Value("jwt.auth.converter.principal-attribute")
-    private String principalAttribute;
-
-    @Value("jwt.auth.converter.resource-id")
-    private String resourceId;
-
+    public JwtAuthConverter(
+            @Value("${jwt.auth.converter.principle-attribute}") String principleAttribute,
+            @Value("${jwt.auth.converter.resource-id}") String resourceId) {
+        this.principleAttribute = principleAttribute;
+        this.resourceId = resourceId;
+    }
     @Override
     public AbstractAuthenticationToken convert(@NonNull Jwt jwt) {
         Collection<GrantedAuthority> authorites = Stream.concat(
@@ -41,8 +43,8 @@ public class JwtAuthConverter implements Converter<Jwt, AbstractAuthenticationTo
 
     private String getPrincipleClaimName(Jwt jwt) {
         String claimName = JwtClaimNames.SUB;
-        if(principalAttribute != null){
-            claimName = principalAttribute;
+        if(principleAttribute != null){
+            claimName = principleAttribute;
         }
         return jwt.getClaim(claimName);
     }
